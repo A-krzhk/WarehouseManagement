@@ -1,4 +1,10 @@
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties; 
 using System.Linq.Expressions;
+using iText.Kernel.Geom;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OfficeOpenXml;
 using WarehouseManagement.Core.DTO;
 using WarehouseManagement.Core.Entities;
@@ -125,7 +131,7 @@ public class ProductLocationService : IProductLocationService
         
         return productLocations.Select(MapToDto);
     }
-
+    
     public async Task<ProductLocationDto?> GetProductLocationByIdAsync(int id)
     {
         var includes = new List<Expression<Func<ProductLocation, object>>>
@@ -255,4 +261,75 @@ public class ProductLocationService : IProductLocationService
             Quantity = productLocation.Quantity
         };
     }
+
+    public async Task<string> GenerateLabelAsync(int productId)
+    {
+        var includes = new List<Expression<Func<ProductLocation, object>>>
+        {
+            pl => pl.Product,
+            pl => pl.Location.Warehouse
+        };
+
+        var productLocations = await _productLocationRepository.GetAsync(
+            predicate: pl => pl.ProductId == productId,
+            orderBy: null,
+            includes: includes,
+            disableTracking: true);
+
+        var productLocation = productLocations.FirstOrDefault();
+        if (productLocation == null)
+            throw new KeyNotFoundException($"Product with ID {productId} not found.");
+
+        var labelData = new LabelDto
+        {
+            ProductId = productLocation.ProductId,
+            ProductName = productLocation.Product.Name,
+            Quantity = productLocation.Quantity,
+            LocationCode = productLocation.Location.LocationCode,
+            WarehouseName = productLocation.Location.Warehouse.Name
+        };
+
+        // Генерация PDF с помощью iText7
+        using var memoryStream = new MemoryStream();
+        using var pdfWriter = new iText.Kernel.Pdf.PdfWriter(memoryStream);
+        // Установка размера страницы (80 мм x 40 мм, 1 мм = 2.83464567 точек)
+        var pageSize = new PageSize(80 * 2.83464567f, 40 * 2.83464567f);
+        using var pdfDocument = new iText.Kernel.Pdf.PdfDocument(pdfWriter);
+        pdfDocument.SetDefaultPageSize(pageSize);
+        var document = new iText.Layout.Document(pdfDocument);
+        document.SetMargins(5, 5, 5, 5); // Установка полей (5 пунктов)
+        
+
+        document.Add(new iText.Layout.Element.Paragraph("\n").SetFontSize(2)); // Пробел
+
+        // Информация об этикетке
+        var table = new iText.Layout.Element.Table(iText.Layout.Properties.UnitValue.CreatePercentArray(new float[] { 40, 60 }))
+            .UseAllAvailableWidth()
+            .SetFontSize(6);
+
+        // Добавление данных в таблицу
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("ID:")).SetBold());
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.ProductId.ToString())));
+
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Product Name:")).SetBold());
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.ProductName)));
+
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Quantity:")).SetBold());
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.Quantity.ToString())));
+
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Location:")).SetBold());
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.LocationCode)));
+
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("Warehouse:")).SetBold());
+        table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.WarehouseName)));
+
+        document.Add(table);
+
+        document.Close();
+
+        // Преобразование в Base64
+        var pdfBytes = memoryStream.ToArray();
+        return Convert.ToBase64String(pdfBytes);
+    }
+    
 }

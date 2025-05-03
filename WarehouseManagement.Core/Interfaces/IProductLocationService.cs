@@ -14,4 +14,5 @@ public interface IProductLocationService
     Task DeleteProductLocationAsync(int id);
     Task TransferProductAsync(int productId, int sourceLocationId, int destinationLocationId, int quantity);
     Task<string> GenerateWarehouseReportAsync();
+    Task<string> GenerateLabelAsync(int productId);
 }

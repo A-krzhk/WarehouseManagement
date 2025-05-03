@@ -131,4 +131,11 @@ public class ProductLocationsController : ControllerBase
         var base64Report = await _productLocationService.GenerateWarehouseReportAsync();
         return Ok(new { Report = base64Report });
     }
+    
+    [HttpGet("generate-label/{productId}")]
+    public async Task<IActionResult> GenerateLabel(int productId)
+    {
+        var base64Label = await _productLocationService.GenerateLabelAsync(productId);
+        return Ok(new { Label = base64Label });
+    }
 }
