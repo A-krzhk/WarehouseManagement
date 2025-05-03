@@ -5,24 +5,26 @@ using WarehouseManagement.Core.Interfaces;
 using WarehouseManagement.Infrastructure.Data;
 
 namespace WarehouseManagement.Core.Services;
-
 public class ProductService : IProductService
 {
     private readonly IGenericRepository<Product> _productRepository;
     private readonly IGenericRepository<Category> _categoryRepository;
     private readonly IGenericRepository<Supplier> _supplierRepository;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IProductLocationRepository _productLocationRepository;
 
     public ProductService(
         IGenericRepository<Product> productRepository,
         IGenericRepository<Category> categoryRepository,
         IGenericRepository<Supplier> supplierRepository,
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext,
+        IProductLocationRepository productLocationRepository)
     {
         _productRepository = productRepository;
         _categoryRepository = categoryRepository;
         _supplierRepository = supplierRepository;
         _dbContext = dbContext;
+        _productLocationRepository = productLocationRepository;
     }
 
     public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
@@ -33,17 +35,37 @@ public class ProductService : IProductService
             .AsNoTracking()
             .ToListAsync();
 
-        return products.Select(p => new ProductDto
+        var productDtos = new List<ProductDto>();
+        
+        foreach (var product in products)
         {
-            Id = p.Id,
-            Name = p.Name,
-            Quantity = p.Quantity,
-            Barcode = p.Barcode,
-            CategoryId = p.CategoryId,
-            CategoryName = p.Category?.Name ?? string.Empty,
-            SupplierId = p.SupplierId,
-            SupplierName = p.Supplier?.Name ?? string.Empty
-        });
+            var productLocations = await _productLocationRepository.GetProductLocationsByProductIdAsync(product.Id);
+            
+            var productDto = new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Quantity = product.Quantity,
+                Barcode = product.Barcode,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category?.Name ?? string.Empty,
+                SupplierId = product.SupplierId,
+                SupplierName = product.Supplier?.Name ?? string.Empty,
+                Locations = productLocations.Select(pl => new ProductLocationInfo
+                {
+                    LocationId = pl.LocationId,
+                    LocationCode = pl.Location?.LocationCode ?? string.Empty,
+                    LocationName = pl.Location?.Name ?? string.Empty,
+                    WarehouseId = pl.Location?.WarehouseId ?? 0,
+                    WarehouseName = pl.Location?.Warehouse?.Name ?? string.Empty,
+                    Quantity = pl.Quantity
+                }).ToList()
+            };
+            
+            productDtos.Add(productDto);
+        }
+        
+        return productDtos;
     }
 
     public async Task<ProductDto?> GetProductByIdAsync(int id)
@@ -57,6 +79,8 @@ public class ProductService : IProductService
         if (product == null)
             return null;
 
+        var productLocations = await _productLocationRepository.GetProductLocationsByProductIdAsync(id);
+        
         return new ProductDto
         {
             Id = product.Id,
@@ -66,7 +90,16 @@ public class ProductService : IProductService
             CategoryId = product.CategoryId,
             CategoryName = product.Category?.Name ?? string.Empty,
             SupplierId = product.SupplierId,
-            SupplierName = product.Supplier?.Name ?? string.Empty
+            SupplierName = product.Supplier?.Name ?? string.Empty,
+            Locations = productLocations.Select(pl => new ProductLocationInfo
+            {
+                LocationId = pl.LocationId,
+                LocationCode = pl.Location?.LocationCode ?? string.Empty,
+                LocationName = pl.Location?.Name ?? string.Empty,
+                WarehouseId = pl.Location?.WarehouseId ?? 0,
+                WarehouseName = pl.Location?.Warehouse?.Name ?? string.Empty,
+                Quantity = pl.Quantity
+            }).ToList()
         };
     }
 
@@ -95,7 +128,8 @@ public class ProductService : IProductService
             CategoryId = product.CategoryId,
             CategoryName = category?.Name ?? string.Empty,
             SupplierId = product.SupplierId,
-            SupplierName = supplier?.Name ?? string.Empty
+            SupplierName = supplier?.Name ?? string.Empty,
+            Locations = new List<ProductLocationInfo>()
         };
     }
 

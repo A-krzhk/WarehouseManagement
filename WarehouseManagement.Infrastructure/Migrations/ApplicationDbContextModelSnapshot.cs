@@ -285,6 +285,36 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.ToTable("InventoryOperations");
                 });
 
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.Location", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LocationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("Locations");
+                });
+
             modelBuilder.Entity("WarehouseManagement.Core.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -319,6 +349,32 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.ProductLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductLocation");
+                });
+
             modelBuilder.Entity("WarehouseManagement.Core.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -350,6 +406,31 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.Warehouse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -422,6 +503,17 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.Location", b =>
+                {
+                    b.HasOne("WarehouseManagement.Core.Entities.Warehouse", "Warehouse")
+                        .WithMany("Locations")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("WarehouseManagement.Core.Entities.Product", b =>
                 {
                     b.HasOne("WarehouseManagement.Core.Entities.Category", "Category")
@@ -441,6 +533,25 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.ProductLocation", b =>
+                {
+                    b.HasOne("WarehouseManagement.Core.Entities.Location", "Location")
+                        .WithMany("ProductLocations")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseManagement.Core.Entities.Product", "Product")
+                        .WithMany("ProductLocations")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("WarehouseManagement.Core.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("InventoryOperations");
@@ -451,14 +562,26 @@ namespace WarehouseManagement.Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.Location", b =>
+                {
+                    b.Navigation("ProductLocations");
+                });
+
             modelBuilder.Entity("WarehouseManagement.Core.Entities.Product", b =>
                 {
                     b.Navigation("InventoryOperations");
+
+                    b.Navigation("ProductLocations");
                 });
 
             modelBuilder.Entity("WarehouseManagement.Core.Entities.Supplier", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WarehouseManagement.Core.Entities.Warehouse", b =>
+                {
+                    b.Navigation("Locations");
                 });
 #pragma warning restore 612, 618
         }

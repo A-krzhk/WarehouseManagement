@@ -48,5 +48,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(u => u.InventoryOperations)
             .HasForeignKey(io => io.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<Location>()
+            .HasOne(l => l.Warehouse)
+            .WithMany(w => w.Locations)
+            .HasForeignKey(l => l.WarehouseId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ProductLocation>()
+            .HasOne(pl => pl.Product)
+            .WithMany(p => p.ProductLocations)
+            .HasForeignKey(pl => pl.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ProductLocation>()
+            .HasOne(pl => pl.Location)
+            .WithMany(l => l.ProductLocations)
+            .HasForeignKey(pl => pl.LocationId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
