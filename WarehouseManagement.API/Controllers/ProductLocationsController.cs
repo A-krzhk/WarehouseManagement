@@ -124,4 +124,11 @@ public class ProductLocationsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpGet("report")]
+    public async Task<IActionResult> GetWarehouseReport()
+    {
+        var base64Report = await _productLocationService.GenerateWarehouseReportAsync();
+        return Ok(new { Report = base64Report });
+    }
 }

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using OfficeOpenXml;
 using WarehouseManagement.Core.DTO;
 using WarehouseManagement.Core.Entities;
 using WarehouseManagement.Core.Interfaces;
@@ -19,8 +20,68 @@ public class ProductLocationService : IProductLocationService
         _productLocationRepository = productLocationRepository;
         _productRepository = productRepository;
         _locationRepository = locationRepository;
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
+    public async Task<string> GenerateWarehouseReportAsync()
+    {
+        var includes = new List<Expression<Func<ProductLocation, object>>>
+        {
+            pl => pl.Product,
+            pl => pl.Location.Warehouse
+        };
 
+        var productLocations = await _productLocationRepository.GetAsync(
+            predicate: null,
+            orderBy: null,
+            includes: includes,
+            disableTracking: true);
+
+        // Группировка по складам и товарам
+        var reportData = productLocations
+            .GroupBy(pl => pl.Location.Warehouse)
+            .Select(g => new WarehouseReportDto
+            {
+                WarehouseId = g.Key.Id,
+                WarehouseName = g.Key.Name,
+                Products = g
+                    .GroupBy(pl => pl.Product)
+                    .Select(pg => new ProductReportItemDto
+                    {
+                        ProductId = pg.Key.Id,
+                        ProductName = pg.Key.Name,
+                        TotalQuantity = pg.Sum(pl => pl.Quantity)
+                    }).ToList()
+            }).ToList();
+
+        // Генерация XLSX
+        using var package = new ExcelPackage();
+        var worksheet = package.Workbook.Worksheets.Add("Warehouse Report");
+        worksheet.Cells[1, 1].Value = "Warehouse ID";
+        worksheet.Cells[1, 2].Value = "Warehouse Name";
+        worksheet.Cells[1, 3].Value = "Product ID";
+        worksheet.Cells[1, 4].Value = "Product Name";
+        worksheet.Cells[1, 5].Value = "Total Quantity";
+
+        int row = 2;
+        foreach (var warehouse in reportData)
+        {
+            foreach (var product in warehouse.Products)
+            {
+                worksheet.Cells[row, 1].Value = warehouse.WarehouseId;
+                worksheet.Cells[row, 2].Value = warehouse.WarehouseName;
+                worksheet.Cells[row, 3].Value = product.ProductId;
+                worksheet.Cells[row, 4].Value = product.ProductName;
+                worksheet.Cells[row, 5].Value = product.TotalQuantity;
+                row++;
+            }
+        }
+
+        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+        // Преобразование в байты и Base64
+        var fileBytes = await package.GetAsByteArrayAsync();
+        return Convert.ToBase64String(fileBytes);
+    }
     public async Task<IEnumerable<ProductLocationDto>> GetAllProductLocationsAsync()
     {
         var includes = new List<Expression<Func<ProductLocation, object>>>
@@ -85,12 +146,10 @@ public class ProductLocationService : IProductLocationService
 
     public async Task<ProductLocationDto> CreateProductLocationAsync(CreateProductLocationDto productLocationDto)
     {
-        // Verify product exists
         var product = await _productRepository.GetByIdAsync(productLocationDto.ProductId);
         if (product == null)
             throw new KeyNotFoundException($"Product with ID {productLocationDto.ProductId} not found.");
-
-        // Verify location exists
+        
         var location = await _locationRepository.GetAsync(
             predicate: l => l.Id == productLocationDto.LocationId,
             includeString: "Warehouse"
@@ -98,14 +157,12 @@ public class ProductLocationService : IProductLocationService
         var locationEntity = location.FirstOrDefault();
         if (locationEntity == null)
             throw new KeyNotFoundException($"Location with ID {productLocationDto.LocationId} not found.");
-
-        // Check if product already exists at this location
+        
         var existingProductLocation = await _productLocationRepository.GetProductLocationByProductAndLocationIdAsync(
             productLocationDto.ProductId, productLocationDto.LocationId);
             
         if (existingProductLocation != null)
         {
-            // Update quantity instead of creating new record
             existingProductLocation.Quantity += productLocationDto.Quantity;
             await _productLocationRepository.UpdateAsync(existingProductLocation);
             return MapToDto(existingProductLocation);
@@ -148,7 +205,6 @@ public class ProductLocationService : IProductLocationService
 
     public async Task TransferProductAsync(int productId, int sourceLocationId, int destinationLocationId, int quantity)
     {
-        // Get source product location
         var sourceProductLocation = await _productLocationRepository.GetProductLocationByProductAndLocationIdAsync(
             productId, sourceLocationId);
             
@@ -157,14 +213,12 @@ public class ProductLocationService : IProductLocationService
             
         if (sourceProductLocation.Quantity < quantity)
             throw new InvalidOperationException($"Not enough quantity available at source location. Available: {sourceProductLocation.Quantity}, Requested: {quantity}");
-
-        // Get or create destination product location
+        
         var destinationProductLocation = await _productLocationRepository.GetProductLocationByProductAndLocationIdAsync(
             productId, destinationLocationId);
             
         if (destinationProductLocation == null)
         {
-            // Create new product location at destination
             destinationProductLocation = new ProductLocation
             {
                 ProductId = productId,
@@ -173,16 +227,13 @@ public class ProductLocationService : IProductLocationService
             };
             await _productLocationRepository.AddAsync(destinationProductLocation);
         }
-
-        // Update quantities
+        
         sourceProductLocation.Quantity -= quantity;
         destinationProductLocation.Quantity += quantity;
-
-        // Save changes
+        
         await _productLocationRepository.UpdateAsync(sourceProductLocation);
         await _productLocationRepository.UpdateAsync(destinationProductLocation);
-
-        // If source location now has zero quantity, consider removing the record
+        
         if (sourceProductLocation.Quantity == 0)
         {
             await _productLocationRepository.DeleteAsync(sourceProductLocation);

@@ -71,7 +71,6 @@ namespace WarehouseManagement.Core.Services;
 
         public async Task<InventoryOperationDto> CreateOperationAsync(CreateInventoryOperationDto operationDto, string userId)
         {
-            // Start a transaction
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
@@ -79,13 +78,12 @@ namespace WarehouseManagement.Core.Services;
                 var product = await _dbContext.Products.FindAsync(operationDto.ProductId);
                 if (product == null)
                     throw new KeyNotFoundException($"Product with ID {operationDto.ProductId} not found.");
-
-                // Update product quantity
+                
                 if (operationDto.Type == OperationType.Incoming)
                 {
                     product.Quantity += operationDto.Quantity;
                 }
-                else // Outgoing
+                else 
                 {
                     if (product.Quantity < operationDto.Quantity)
                         throw new InvalidOperationException($"Not enough stock for product {product.Name}. Current stock: {product.Quantity}");
@@ -94,8 +92,7 @@ namespace WarehouseManagement.Core.Services;
                 }
 
                 await _productRepository.UpdateAsync(product);
-
-                // Create operation record
+                
                 var operation = new InventoryOperation
                 {
                     ProductId = operationDto.ProductId,
@@ -108,7 +105,6 @@ namespace WarehouseManagement.Core.Services;
 
                 await _operationRepository.AddAsync(operation);
 
-                // Commit transaction
                 await transaction.CommitAsync();
 
                 var user = await _dbContext.Users.FindAsync(userId);
@@ -128,7 +124,6 @@ namespace WarehouseManagement.Core.Services;
             }
             catch
             {
-                // Rollback transaction on error
                 await transaction.RollbackAsync();
                 throw;
             }

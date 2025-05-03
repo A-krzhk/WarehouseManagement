@@ -71,7 +71,6 @@ public class LocationService : ILocationService
 
     public async Task<LocationDto> CreateLocationAsync(CreateLocationDto locationDto)
     {
-        // Verify warehouse exists
         var warehouse = await _warehouseRepository.GetByIdAsync(locationDto.WarehouseId);
         if (warehouse == null)
             throw new KeyNotFoundException($"Warehouse with ID {locationDto.WarehouseId} not found.");
@@ -102,8 +101,7 @@ public class LocationService : ILocationService
         var location = await _locationRepository.GetByIdAsync(id);
         if (location == null)
             throw new KeyNotFoundException($"Location with ID {id} not found.");
-
-        // Verify warehouse exists if changing warehouse
+        
         if (location.WarehouseId != locationDto.WarehouseId)
         {
             var warehouse = await _warehouseRepository.GetByIdAsync(locationDto.WarehouseId);

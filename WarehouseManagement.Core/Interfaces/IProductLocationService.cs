@@ -13,4 +13,5 @@ public interface IProductLocationService
     Task UpdateProductLocationAsync(int id, UpdateProductLocationDto productLocationDto);
     Task DeleteProductLocationAsync(int id);
     Task TransferProductAsync(int productId, int sourceLocationId, int destinationLocationId, int quantity);
+    Task<string> GenerateWarehouseReportAsync();
 }
