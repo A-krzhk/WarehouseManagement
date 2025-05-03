@@ -1,0 +1,17 @@
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Infrastructure.deps.json
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Infrastructure.runtimeconfig.json
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Infrastructure.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Infrastructure.pdb
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Core.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\bin\Debug\net9.0\WarehouseManagement.Core.pdb
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.AssemblyInfo.cs
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\Warehous.AFEEE4AE.Up2Date
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\refint\WarehouseManagement.Infrastructure.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.pdb
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.genruntimeconfig.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\ref\WarehouseManagement.Infrastructure.dll

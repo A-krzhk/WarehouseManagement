@@ -1,0 +1,12 @@
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\bin\Debug\net9.0\WarehouseManagement.Core.deps.json
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\bin\Debug\net9.0\WarehouseManagement.Core.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\bin\Debug\net9.0\WarehouseManagement.Core.pdb
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.csproj.AssemblyReference.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.AssemblyInfoInputs.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.AssemblyInfo.cs
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.csproj.CoreCompileInputs.cache
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\refint\WarehouseManagement.Core.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.pdb
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\ref\WarehouseManagement.Core.dll

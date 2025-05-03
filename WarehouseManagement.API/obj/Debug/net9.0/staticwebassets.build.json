@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "gw3mfoTkGrkqc9d1haZXgOC/UiD2ODXKGqHt/QsCDqM=",
+  "Source": "WarehouseManagement.API",
+  "BasePath": "_content/WarehouseManagement.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
