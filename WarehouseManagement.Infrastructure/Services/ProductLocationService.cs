@@ -264,9 +264,21 @@ public class ProductLocationService : IProductLocationService
 
     public async Task<string> GenerateLabelAsync(int productId)
     {
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product == null)
+            throw new KeyNotFoundException($"Product with ID {productId} not found.");
+
+        var labelData = new LabelDto
+        {
+            ProductId = productId,
+            ProductName = product.Name,
+            Quantity = 0,
+            LocationCode = "-",
+            WarehouseName = "-"
+        };
+        
         var includes = new List<Expression<Func<ProductLocation, object>>>
         {
-            pl => pl.Product,
             pl => pl.Location.Warehouse
         };
 
@@ -277,37 +289,30 @@ public class ProductLocationService : IProductLocationService
             disableTracking: true);
 
         var productLocation = productLocations.FirstOrDefault();
-        if (productLocation == null)
-            throw new KeyNotFoundException($"Product with ID {productId} not found.");
-
-        var labelData = new LabelDto
+        
+        if (productLocation != null)
         {
-            ProductId = productLocation.ProductId,
-            ProductName = productLocation.Product.Name,
-            Quantity = productLocation.Quantity,
-            LocationCode = productLocation.Location.LocationCode,
-            WarehouseName = productLocation.Location.Warehouse.Name
-        };
+            labelData.Quantity = productLocation.Quantity;
+            labelData.LocationCode = productLocation.Location?.LocationCode ?? "-";
+            labelData.WarehouseName = productLocation.Location?.Warehouse?.Name ?? "-";
+        }
 
-        // Генерация PDF с помощью iText7
         using var memoryStream = new MemoryStream();
         using var pdfWriter = new iText.Kernel.Pdf.PdfWriter(memoryStream);
-        // Установка размера страницы (80 мм x 40 мм, 1 мм = 2.83464567 точек)
+
         var pageSize = new PageSize(80 * 2.83464567f, 40 * 2.83464567f);
         using var pdfDocument = new iText.Kernel.Pdf.PdfDocument(pdfWriter);
         pdfDocument.SetDefaultPageSize(pageSize);
         var document = new iText.Layout.Document(pdfDocument);
-        document.SetMargins(5, 5, 5, 5); // Установка полей (5 пунктов)
+        document.SetMargins(5, 5, 5, 5); 
         
+        document.Add(new iText.Layout.Element.Paragraph("\n").SetFontSize(2)); 
 
-        document.Add(new iText.Layout.Element.Paragraph("\n").SetFontSize(2)); // Пробел
 
-        // Информация об этикетке
         var table = new iText.Layout.Element.Table(iText.Layout.Properties.UnitValue.CreatePercentArray(new float[] { 40, 60 }))
             .UseAllAvailableWidth()
             .SetFontSize(6);
-
-        // Добавление данных в таблицу
+        
         table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph("ID:")).SetBold());
         table.AddCell(new iText.Layout.Element.Cell().Add(new iText.Layout.Element.Paragraph(labelData.ProductId.ToString())));
 
@@ -327,7 +332,6 @@ public class ProductLocationService : IProductLocationService
 
         document.Close();
 
-        // Преобразование в Base64
         var pdfBytes = memoryStream.ToArray();
         return Convert.ToBase64String(pdfBytes);
     }
