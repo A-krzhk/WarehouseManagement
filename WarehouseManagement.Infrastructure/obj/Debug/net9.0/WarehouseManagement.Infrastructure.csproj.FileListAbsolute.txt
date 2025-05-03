@@ -15,3 +15,4 @@ C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastruct
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.pdb
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.genruntimeconfig.cache
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\ref\WarehouseManagement.Infrastructure.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Infrastructure\obj\Debug\net9.0\WarehouseManagement.Infrastructure.sourcelink.json

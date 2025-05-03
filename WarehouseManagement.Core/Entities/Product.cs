@@ -11,8 +11,5 @@ public class Product
     public int SupplierId { get; set; }
     public Supplier? Supplier { get; set; }
     public ICollection<InventoryOperation> InventoryOperations { get; set; } = new List<InventoryOperation>();
-    public int WarehouseId { get; set; }
-    public Warehouse Warehouse { get; set; }
-    public int LocationId { get; set; }
-    public Location Location { get; set; }
+
 }

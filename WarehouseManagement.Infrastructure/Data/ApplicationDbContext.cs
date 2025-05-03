@@ -26,14 +26,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany();
         
         builder.Entity<Product>()
-            .HasOne(p => p.Warehouse)
-            .WithMany();
-        
-        builder.Entity<Product>()
-            .HasOne(p => p.Location)
-            .WithMany();
-        
-        builder.Entity<Product>()
             .HasOne(p => p.Category)
             .WithMany(c => c.Products)
             .HasForeignKey(p => p.CategoryId)

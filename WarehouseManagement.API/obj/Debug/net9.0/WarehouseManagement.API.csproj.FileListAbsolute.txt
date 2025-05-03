@@ -176,3 +176,4 @@ C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.API\obj\Deb
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.API\obj\Debug\net9.0\WarehouseManagement.API.pdb
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.API\obj\Debug\net9.0\WarehouseManagement.API.genruntimeconfig.cache
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.API\obj\Debug\net9.0\ref\WarehouseManagement.API.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.API\obj\Debug\net9.0\WarehouseManagement.API.sourcelink.json

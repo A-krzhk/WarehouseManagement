@@ -10,8 +10,6 @@ public class ProductDto
     public string CategoryName { get; set; } = string.Empty;
     public int SupplierId { get; set; }
     public string SupplierName { get; set; } = string.Empty;
-    public int WarehouseId { get; set; }
-    public int LocationId { get; set; }
 }
 
 public class CreateProductDto
@@ -21,8 +19,6 @@ public class CreateProductDto
     public string Barcode { get; set; } = string.Empty;
     public int CategoryId { get; set; }
     public int SupplierId { get; set; }
-    public int WarehouseId { get; set; }
-    public int LocationId { get; set; }
 }
 
 public class UpdateProductDto
@@ -31,6 +27,4 @@ public class UpdateProductDto
     public string Barcode { get; set; } = string.Empty;
     public int CategoryId { get; set; }
     public int SupplierId { get; set; }
-    public int WarehouseId { get; set; }
-    public int LocationId { get; set; }
 }

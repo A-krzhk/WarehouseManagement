@@ -10,3 +10,4 @@ C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\De
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\refint\WarehouseManagement.Core.dll
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.pdb
 C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\ref\WarehouseManagement.Core.dll
+C:\Users\alena\RiderProjects\WarehouseManagement\WarehouseManagement.Core\obj\Debug\net9.0\WarehouseManagement.Core.sourcelink.json
